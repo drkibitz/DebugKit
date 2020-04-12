@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "216A8317-8FDB-4BB5-835B-DE8B47BF2BAA",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "DebugKitTests",
+        "name" : "DebugKitTests"
+      }
+    }
+  ],
+  "version" : 1
+}

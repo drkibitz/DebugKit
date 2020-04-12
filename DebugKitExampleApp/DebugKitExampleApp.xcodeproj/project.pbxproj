@@ -24,6 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3C2AB0672443C8A200FCA18C /* DebugKit.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = DebugKit.xctestplan; path = Supporting/DebugKit.xctestplan; sourceTree = "<group>"; };
 		3C47911124425A6C00C688BD /* DebugKitExampleUIKit.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DebugKitExampleUIKit.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3C47911424425A6C00C688BD /* AppDelegateUIKit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegateUIKit.swift; sourceTree = "<group>"; };
 		3C47911624425A6C00C688BD /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -63,6 +64,7 @@
 		3C47910824425A6C00C688BD = {
 			isa = PBXGroup;
 			children = (
+				3C2AB0672443C8A200FCA18C /* DebugKit.xctestplan */,
 				3C47912824425AE700C688BD /* DebugKit */,
 				3CAE8F782442D4AB00715B3B /* Resources */,
 				3C47911324425A6C00C688BD /* Sources */,
