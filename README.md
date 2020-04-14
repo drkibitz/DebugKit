@@ -7,3 +7,5 @@ This started out as a simple debug logger, which turned into an in app console, 
 Loosely based on other examples I've seen over time.
 
 The package supports iOS 11+
+
+<img src="https://github.com/drkibitz/assets/blob/master/DebugKitRecording.gif" width="300">
