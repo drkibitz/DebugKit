@@ -28,38 +28,46 @@ internal class DebugViewController: UIViewController {
     }
 }
 
-internal class DebugTableViewController: DebugViewController {
+struct DebugTableCellReuseId: RawRepresentable, ExpressibleByStringLiteral {
+    typealias StringLiteralType = String
+    typealias RawValue = String
 
-    // MARK: - Internal -
+    var rawValue: String
 
-    struct ReuseIdentifier: RawRepresentable, ExpressibleByStringLiteral {
-        typealias StringLiteralType = String
-        typealias RawValue = String
+    static let `default`: DebugTableCellReuseId = "default"
 
-        var rawValue: String
-
-        static let `default`: ReuseIdentifier = "default"
-
-        init(stringLiteral string: String) {
-            rawValue = string
-        }
-        init?(rawValue: String) {
-            self.init(stringLiteral: rawValue)
-        }
+    init(stringLiteral string: String) {
+        rawValue = string
     }
+    init?(rawValue: String) {
+        self.init(stringLiteral: rawValue)
+    }
+}
+
+// MARK: - Internal -
+
+protocol DataSourceProtocol: UITableViewDataSource, UITableViewDelegate {
+    associatedtype Section
+    associatedtype Model
+    associatedtype DataType
+}
+
+class DataSource<DataType>: NSObject, DataSourceProtocol {
 
     struct Section {
 
         struct Item {
-            let identifier: ReuseIdentifier?
+            let reuseId: DebugTableCellReuseId?
             let title: String?
             let height: CGFloat
             let handler: ((IndexPath) -> Void)?
+            let data: DataType?
 
-            init(identifier: ReuseIdentifier = .default, title: String? = nil, height: CGFloat = 0, handler: ((IndexPath) -> Void)? = nil) {
-                self.identifier = identifier
+            init(reuseId: DebugTableCellReuseId = .default, title: String? = nil, height: CGFloat = 0, data: DataType? = nil, handler: ((IndexPath) -> Void)? = nil) {
+                self.reuseId = reuseId
                 self.title = title
                 self.height = height
+                self.data = data;
                 self.handler = handler
             }
         }
@@ -76,83 +84,111 @@ internal class DebugTableViewController: DebugViewController {
     }
     typealias Model = [Section]
 
-    class DataSource: NSObject, UITableViewDataSource, UITableViewDelegate {
+    var model: Model
 
-        var model: Model
+    init(model: Model = []) {
+        self.model = model
+    }
 
-        init(model: Model = []) {
-            self.model = model
-        }
+    func isValid(section: Int) -> Bool {
+        return section < model.count &&
+            model[section].items.count > 0
+    }
 
-        func numberOfSections(in tableView: UITableView) -> Int {
-            return model.count
-        }
+    func isValid(indexPath: IndexPath) -> Bool {
+        return isValid(section: indexPath.section) &&
+            indexPath.item < model[indexPath.section].items.count
+    }
 
-        func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-            return model[section].items.count
-        }
+    func itemAt(indexPath: IndexPath) -> Section.Item {
+        return model[indexPath.section].items[indexPath.row]
+    }
 
-        func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-            return model[section].title
-        }
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return model.count
+    }
 
-        func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-            let label = UILabel()
-            label.adjustsFontSizeToFitWidth = true
-            label.minimumScaleFactor = 0.1
-            label.translatesAutoresizingMaskIntoConstraints = false
-            label.font = UIFont.systemFont(ofSize: UIFont.systemFontSize)
-            label.text = self.tableView(tableView, titleForHeaderInSection: section)
-            label.textColor = .lightText
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        guard isValid(section: section) else { return 0 }
+        return model[section].items.count
+    }
 
-            let view = UIView()
-            view.addSubview(label)
-            view.backgroundColor = UIColor(white: 0.05, alpha: 1)
-            let guide = view.layoutMarginsGuide
-            NSLayoutConstraint.activate([
-                label.topAnchor.constraint(equalTo: guide.topAnchor),
-                label.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
-                label.leftAnchor.constraint(equalTo: guide.leftAnchor),
-                label.rightAnchor.constraint(equalTo: guide.rightAnchor)
-            ])
-            return view
-        }
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        guard isValid(section: section) else { return nil }
+        return model[section].title
+    }
 
-        func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-            return model[indexPath.section].items[indexPath.row].height
-        }
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard isValid(section: section) else { return nil }
 
-        func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-            return model[section].height
-        }
+        let label = UILabel()
+        label.adjustsFontSizeToFitWidth = true
+        label.minimumScaleFactor = 0.1
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.font = UIFont.systemFont(ofSize: UIFont.systemFontSize)
+        label.text = self.tableView(tableView, titleForHeaderInSection: section)
+        label.textColor = .lightText
 
-        func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let item = model[indexPath.section].items[indexPath.row]
+        let view = UIView()
+        view.addSubview(label)
+        view.backgroundColor = UIColor(white: 0.05, alpha: 1)
+        let guide = view.layoutMarginsGuide
+        NSLayoutConstraint.activate([
+            label.topAnchor.constraint(equalTo: guide.topAnchor),
+            label.bottomAnchor.constraint(equalTo: guide.bottomAnchor),
+            label.leftAnchor.constraint(equalTo: guide.leftAnchor),
+            label.rightAnchor.constraint(equalTo: guide.rightAnchor)
+        ])
+        return view
+    }
 
-            let reuseIdentifier = item.identifier ?? ReuseIdentifier.default
-            let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier.rawValue, for: indexPath)
-            cell.backgroundColor = .black
-            cell.textLabel?.textColor = .white
-            cell.selectionStyle = .none
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return isValid(indexPath: indexPath)
+            ? model[indexPath.section].items[indexPath.row].height
+            : 0
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return isValid(section: section) ? model[section].height : 0
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell: UITableViewCell
+        if isValid(indexPath: indexPath) {
+            let item = itemAt(indexPath: indexPath)
+            let reuseId = item.reuseId ?? DebugTableCellReuseId.default
+            cell = tableView.dequeueReusableCell(withIdentifier: reuseId.rawValue, for: indexPath)
             cell.textLabel?.text = item.title
-
-            if model[indexPath.section].items[indexPath.row].handler != nil {
-                cell.accessoryType = .disclosureIndicator
-            }
-            return cell
+        } else {
+            let reuseId = DebugTableCellReuseId.default
+            cell = tableView.dequeueReusableCell(withIdentifier: reuseId.rawValue, for: indexPath)
         }
+        if model[indexPath.section].items[indexPath.row].handler != nil {
+            cell.accessoryType = .disclosureIndicator
+        }
+        cell.backgroundColor = .black
+        cell.textLabel?.textColor = .lightText
+        cell.selectionStyle = .none
+        cell.tintColor = .lightText
+        return cell
+    }
 
-        func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-            if let handler = model[indexPath.section].items[indexPath.row].handler {
-                handler(indexPath)
-            }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let handler = model[indexPath.section].items[indexPath.row].handler {
+            handler(indexPath)
         }
     }
+}
+
+internal class DebugTableViewController<DS: DataSourceProtocol>: DebugViewController {
+
+    typealias Model = DS.Model
+    typealias Section = DS.Section
 
     // swiftlint:disable force_cast
     final var tableView: UITableView { return view as! UITableView }
     // swiftlint:enable force_cast
-    final var dataSource: DataSource? {
+    final var dataSource: DS? {
         didSet {
             tableView.dataSource = dataSource
             tableView.delegate = dataSource
@@ -161,14 +197,15 @@ internal class DebugTableViewController: DebugViewController {
 
     override final func loadView() {
         let tableView = UITableView()
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: ReuseIdentifier.default.rawValue)
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: DebugTableCellReuseId.default.rawValue)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.backgroundColor = .black
-        tableView.tintColor = .white
+        tableView.tintColor = .lightText
         tableView.indexDisplayMode = .automatic
         tableView.separatorStyle = .singleLine
         tableView.separatorColor = .darkGray
         tableView.separatorEffect = UIBlurEffect(style: .regular)
+        tableView.tableFooterView = UIView(frame: CGRect.zero) // removes extra cells
         view = tableView
     }
 

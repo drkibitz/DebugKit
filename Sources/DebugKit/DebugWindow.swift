@@ -97,9 +97,9 @@ internal final class DebugWindow: UIWindow {
         nav.view.backgroundColor = .black
         nav.navigationBar.barStyle = .black
         nav.navigationBar.barTintColor = .black
-        nav.navigationBar.tintColor = .white
+        nav.navigationBar.tintColor = .lightText
         nav.toolbar.barStyle = .black
-        nav.toolbar.tintColor = .white
+        nav.toolbar.tintColor = .lightText
         nav.isNavigationBarHidden = true
         nav.isToolbarHidden = true
         nav.preferredStatusBarStyle = rootViewController?.preferredStatusBarStyle ?? .default

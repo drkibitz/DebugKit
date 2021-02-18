@@ -1,15 +1,15 @@
 #if DEBUG
-internal final class DebugNetworkViewController: DebugTableViewController {
+internal final class DebugNetworkViewController: DebugTableViewController<DataSource<Any>> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
         title = "Network"
 
-        dataSource = DataSource(model: [Section(
+        dataSource = DataSource(model: [Self.Section(
             title: "TODO",
             height: 33,
-            items: [Section.Item(title: "TODO", height: 50)]
+            items: [Self.Section.Item(title: "TODO", height: 50)]
         )])
     }
 }

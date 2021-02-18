@@ -66,27 +66,27 @@ extension DebugConsole {
     // MARK: - Public -
 
     public func verbose(_ text: String) {
-        self.print(format(Self.timestamp, color: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)), format("VERBOSE", color: #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)), format(text))
+        self.print(format(Self.timestamp, color: .lightText), format("VERBOSE", color: #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)), format(text))
     }
 
     public func debug(_ text: String) {
-        self.print(format(Self.timestamp, color: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)), format("DEBUG", color: #colorLiteral(red: 0.3383780718, green: 0.8710207343, blue: 0.3861016631, alpha: 1)), format(text))
+        self.print(format(Self.timestamp, color: .lightText), format("DEBUG", color: #colorLiteral(red: 0.3383780718, green: 0.8710207343, blue: 0.3861016631, alpha: 1)), format(text))
     }
 
     public func info(_ text: String) {
-        self.print(format(Self.timestamp, color: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)), format("INFO", color: #colorLiteral(red: 0.03799040243, green: 0.6652550697, blue: 0.9694569707, alpha: 1)), format(text))
+        self.print(format(Self.timestamp, color: .lightText), format("INFO", color: #colorLiteral(red: 0.03799040243, green: 0.6652550697, blue: 0.9694569707, alpha: 1)), format(text))
     }
 
     public func warning(_ text: String) {
-        self.print(format(Self.timestamp, color: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)), format("WARNING", color: #colorLiteral(red: 0.9837539792, green: 0.5999872088, blue: 0, alpha: 1)), format(text))
+        self.print(format(Self.timestamp, color: .lightText), format("WARNING", color: #colorLiteral(red: 0.9837539792, green: 0.5999872088, blue: 0, alpha: 1)), format(text))
     }
 
     public func error(_ text: String) {
-        self.print(format(Self.timestamp, color: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)), format("ERROR", color: #colorLiteral(red: 0.9918593764, green: 0.3232502639, blue: 0.3038080037, alpha: 1)), format(text))
+        self.print(format(Self.timestamp, color: .lightText), format("ERROR", color: #colorLiteral(red: 0.9918593764, green: 0.3232502639, blue: 0.3038080037, alpha: 1)), format(text))
     }
 
     public func addMarker() {
-        self.print(format(Self.timestamp, color: #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)), format("–––––––––––––", color: #colorLiteral(red: 0.5568627715, green: 0.3529411852, blue: 0.9686274529, alpha: 1)))
+        self.print(format(Self.timestamp, color: .lightText), format("–––––––––––––", color: #colorLiteral(red: 0.5568627715, green: 0.3529411852, blue: 0.9686274529, alpha: 1)))
     }
 }
 #else

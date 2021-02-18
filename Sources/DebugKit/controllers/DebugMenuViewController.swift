@@ -1,7 +1,7 @@
 #if DEBUG
 import Foundation
 
-internal final class DebugMenuViewController: DebugTableViewController {
+internal final class DebugMenuViewController: DebugTableViewController<DataSource<Any>> {
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -12,11 +12,14 @@ internal final class DebugMenuViewController: DebugTableViewController {
             Section.Item(title: "Console", height: 50) { [weak self] _ in
                 self?.navigationController?.pushViewController(DebugConsoleViewController(), animated: true)
             },
-            Section.Item(title: "Network", height: 50) { [weak self] _ in
-                self?.navigationController?.pushViewController(DebugNetworkViewController(), animated: true)
-            },
             Section.Item(title: "Settings", height: 50) { [weak self] _ in
                 self?.navigationController?.pushViewController(DebugSettingsViewController(), animated: true)
+            },
+            Section.Item(title: "User Defaults", height: 50) { [weak self] _ in
+                self?.navigationController?.pushViewController(DebugUserDefaultsViewController(), animated: true)
+            },
+            Section.Item(title: "Network", height: 50) { [weak self] _ in
+                self?.navigationController?.pushViewController(DebugNetworkViewController(), animated: true)
             }
         ]
 
